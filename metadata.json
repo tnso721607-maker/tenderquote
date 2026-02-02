@@ -1,0 +1,5 @@
+{
+  "name": "SmartRate Tender Estimator",
+  "description": "A professional tool for managing Schedule of Rates (SOR). Store item rates with detailed scopes, automatically select the lowest benchmark prices, and use AI-powered semantic matching to validate scopes for tender quotes.",
+  "requestFramePermissions": []
+}
