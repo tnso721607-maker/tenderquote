@@ -6,61 +6,35 @@
     <title>SmartRate Tender Estimator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Babel Standalone for browser-side TSX transpilation -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f9fafb;
-            margin: 0;
-            padding: 0;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; margin: 0; padding: 0; }
         #root:empty::before {
-            content: 'Initializing SmartRate...';
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            width: 100vw;
-            color: #6366f1;
-            font-weight: 600;
-            font-size: 1.1rem;
-            letter-spacing: -0.025em;
+            content: 'Loading SmartRate...';
+            display: flex; align-items: center; justify-content: center;
+            height: 100vh; width: 100vw; color: #6366f1; font-weight: 600;
         }
         .error-hud {
-            padding: 2rem;
-            max-width: 600px;
-            margin: 4rem auto;
-            background: #fff;
-            border: 2px solid #ef4444;
-            border-radius: 1rem;
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            padding: 2rem; max-width: 500px; margin: 10vh auto;
+            background: #fff; border-radius: 1.5rem; border: 1px solid #fee2e2;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); text-align: center;
         }
     </style>
     <script>
-        window.process = { env: { API_KEY: '' } };
-        
-        function reportError(title, message) {
+        // Ensure process.env.API_KEY exists to prevent reference errors during boot
+        window.process = { env: { API_KEY: window.process?.env?.API_KEY || '' } };
+
+        window.onerror = function(message, source, lineno, colno, error) {
             const root = document.getElementById('root');
-            if (root) {
+            if (root && root.innerHTML === '') {
                 root.innerHTML = `
                     <div class="error-hud">
-                        <h1 style="color: #ef4444; font-weight: 800; font-size: 1.5rem; margin-bottom: 0.5rem;">${title}</h1>
-                        <p style="color: #475569; font-size: 0.875rem; margin-bottom: 1rem;">${message || 'Module loading failed.'}</p>
-                        <button onclick="window.location.reload()" style="margin-top: 1.5rem; width: 100%; padding: 0.75rem; background: #6366f1; color: white; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer;">
-                            Refresh Application
-                        </button>
+                        <h2 style="color: #b91c1c; font-weight: 800; font-size: 1.25rem; margin-bottom: 1rem;">Startup Failed</h2>
+                        <p style="color: #4b5563; font-size: 0.875rem; margin-bottom: 1.5rem;">${message}</p>
+                        <button onclick="location.reload()" style="background: #6366f1; color: white; padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 600; border: none; cursor: pointer;">Retry Loading</button>
                     </div>
                 `;
             }
-        }
-
-        window.onerror = function(message, source, lineno, colno, error) {
-            if (message === "Script error.") {
-                console.warn("Generic script error detected. Often caused by cross-origin issues or MIME mismatches on GitHub Pages.");
-                return;
-            }
-            reportError("Application Error", message);
         };
     </script>
     <script type="importmap">
@@ -79,15 +53,6 @@
 </head>
 <body>
     <div id="root"></div>
-    <!-- 
-      Consolidating the application into one file to avoid the "Script error" 
-      typically caused by GitHub Pages serving .tsx files with the wrong MIME type (text/plain).
-    -->
-    <script 
-        type="text/babel" 
-        data-type="module" 
-        data-presets="typescript,react" 
-        src="./index.tsx"
-    ></script>
+    <script type="text/babel" data-type="module" data-presets="typescript,react" src="./index.tsx"></script>
 </body>
 </html>
