@@ -8,12 +8,12 @@ import {
   Download,
   FileSpreadsheet
 } from 'lucide-react';
-import { SORItem } from './types';
+import { SORItem } from './types.ts';
 
 // Components
-import RateForm from './components/RateForm';
-import RateList from './components/RateList';
-import TenderProcessor from './components/TenderProcessor';
+import RateForm from './components/RateForm.tsx';
+import RateList from './components/RateList.tsx';
+import TenderProcessor from './components/TenderProcessor.tsx';
 
 const App: React.FC = () => {
   const [view, setView] = useState<'database' | 'tender'>('database');
@@ -26,7 +26,12 @@ const App: React.FC = () => {
   useEffect(() => {
     const saved = localStorage.getItem('smart_rate_sor');
     if (saved) {
-      setSorData(JSON.parse(saved));
+      try {
+        setSorData(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to parse saved rates", e);
+        setSorData([]);
+      }
     }
   }, []);
 
