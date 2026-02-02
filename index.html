@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +6,8 @@
     <title>SmartRate Tender Estimator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Babel Standalone for browser-side TSX transpilation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -15,7 +16,7 @@
             padding: 0;
         }
         #root:empty::before {
-            content: 'Initializing Application...';
+            content: 'Initializing SmartRate...';
             display: flex;
             align-items: center;
             justify-content: center;
@@ -26,46 +27,67 @@
             font-size: 1.1rem;
             letter-spacing: -0.025em;
         }
-        @media print {
-            .no-print { display: none !important; }
-            body { background: white; padding: 0; }
-            .print-only { display: block !important; }
-            .max-w-7xl { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
-            .grid { display: block !important; }
-            .rounded-xl, .rounded-2xl { border-radius: 0 !important; border: 1px solid #eee !important; page-break-inside: avoid; margin-bottom: 1rem; }
+        .error-hud {
+            padding: 2rem;
+            max-width: 600px;
+            margin: 4rem auto;
+            background: #fff;
+            border: 2px solid #ef4444;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
         }
     </style>
-    <!-- Shim process and global error diagnostics -->
     <script>
-        window.process = window.process || { env: { API_KEY: '' } };
-        window.addEventListener('error', function(event) {
-            console.error("Critical Runtime Error:", event.error);
+        window.process = { env: { API_KEY: '' } };
+        
+        function reportError(title, message) {
             const root = document.getElementById('root');
-            if (root && root.innerHTML === '') {
-                root.innerHTML = '<div style="padding: 40px; text-align: center; color: #ef4444; font-family: sans-serif;">' +
-                    '<h1 style="font-size: 20px; font-weight: bold;">Application failed to start</h1>' +
-                    '<p style="margin-top: 10px; color: #64748b;">' + (event.message || 'Unknown error') + '</p>' +
-                    '<p style="font-size: 12px; margin-top: 20px;">Check browser console for more details.</p>' +
-                '</div>';
+            if (root) {
+                root.innerHTML = `
+                    <div class="error-hud">
+                        <h1 style="color: #ef4444; font-weight: 800; font-size: 1.5rem; margin-bottom: 0.5rem;">${title}</h1>
+                        <p style="color: #475569; font-size: 0.875rem; margin-bottom: 1rem;">${message || 'Module loading failed.'}</p>
+                        <button onclick="window.location.reload()" style="margin-top: 1.5rem; width: 100%; padding: 0.75rem; background: #6366f1; color: white; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer;">
+                            Refresh Application
+                        </button>
+                    </div>
+                `;
             }
-        });
+        }
+
+        window.onerror = function(message, source, lineno, colno, error) {
+            if (message === "Script error.") {
+                console.warn("Generic script error detected. Often caused by cross-origin issues or MIME mismatches on GitHub Pages.");
+                return;
+            }
+            reportError("Application Error", message);
+        };
     </script>
-<script type="importmap">
+    <script type="importmap">
 {
   "imports": {
     "react": "https://esm.sh/react@19.0.0",
-    "react/": "https://esm.sh/react@19.0.0/",
     "react-dom": "https://esm.sh/react-dom@19.0.0",
     "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
     "@google/genai": "https://esm.sh/@google/genai@1.3.0",
     "lucide-react": "https://esm.sh/lucide-react@0.460.0?external=react",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/"
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/"
   }
 }
 </script>
 </head>
 <body>
     <div id="root"></div>
-    <script type="module" src="index.tsx" crossorigin></script>
+    <!-- 
+      Consolidating the application into one file to avoid the "Script error" 
+      typically caused by GitHub Pages serving .tsx files with the wrong MIME type (text/plain).
+    -->
+    <script 
+        type="text/babel" 
+        data-type="module" 
+        data-presets="typescript,react" 
+        src="./index.tsx"
+    ></script>
 </body>
 </html>
