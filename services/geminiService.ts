@@ -1,8 +1,17 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
-import { SORItem, MatchResult } from "../types";
+import { SORItem, MatchResult } from "../types.ts";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+// Defensive access to environment variables
+const getApiKey = () => {
+  try {
+    return process?.env?.API_KEY || '';
+  } catch (e) {
+    return '';
+  }
+};
+
+const ai = new GoogleGenAI({ apiKey: getApiKey() });
 
 export async function checkScopeMatch(
   requestedScope: string,
