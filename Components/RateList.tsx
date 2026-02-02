@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Trash2, Edit3, TrendingDown, Info } from 'lucide-react';
-import { SORItem } from '../types';
+import { SORItem } from '../types.ts';
 
 interface RateListProps {
   rates: SORItem[];
