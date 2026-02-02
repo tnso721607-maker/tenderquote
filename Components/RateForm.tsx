@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-import { X, ClipboardPaste, ListPlus, Loader2, Sparkles } from 'lucide-react';
-import { parseRatesFromText } from '../services/geminiService';
-import { SORItem } from '../types';
+import { X, ClipboardPaste, ListPlus, Loader2 } from 'lucide-react';
+import { parseRatesFromText } from '../services/geminiService.ts';
+import { SORItem } from '../types.ts';
 
 interface RateFormProps {
   editingItem?: SORItem | null;
